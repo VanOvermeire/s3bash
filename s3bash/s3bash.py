@@ -6,6 +6,7 @@ import boto3
 # TODO commands cat (for reading files), cd (with prefixes?), rm (file), touch (f), > (f), mv or copy (f)
 # TODO active the delete, split up file
 
+S3_DIRECTORY_NAME= 'S3_DIRECTORY'
 NO_BUCKET = 'NONE'
 
 
@@ -29,12 +30,10 @@ def get_s3_client():
 
 # or use an exported variable
 def get_current_s3_directory():
-    my_file = os.path.expanduser('~/.s3bsh/s3data')
-    with open(my_file, 'r') as s3data:
-        for line in s3data.readlines():
-            if 'DIRECTORY' in line:
-                return line.split('=')[1].replace('\n', '')
-    return NO_BUCKET
+    try:
+        return os.environ[S3_DIRECTORY_NAME]
+    except KeyError:
+        return NO_BUCKET
 
 
 def handle_list():
@@ -103,21 +102,13 @@ def is_bucket_name(name):
 
 def handle_change_directory(names):
     name = names[0]
-    my_dir = os.path.expanduser('~/.s3bsh')
-    my_file = os.path.expanduser('~/.s3bsh/s3data')
-
-    if not os.path.exists(my_dir):
-        os.mkdir(my_dir)
 
     if name == '..':
-        with open(my_file, 'w') as s3data:
-            s3data.write('DIRECTORY=' + NO_BUCKET)
+        os.environ[S3_DIRECTORY_NAME] = NO_BUCKET
     else:
         if is_bucket_name(name):
-            # TODO this will overwrite other contents...
-            with open(my_file, 'w') as s3data:
-                s3data.write('DIRECTORY=' + name)
-                print(name)
+            os.environ[S3_DIRECTORY_NAME] = name
+            print(name)
         else:
             print('Bucket does not exist')
             exit(1)

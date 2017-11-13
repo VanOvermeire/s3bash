@@ -1,6 +1,16 @@
-A small experiment. If you add the s3bash.sh file as 's3bash' to, for example, /usr/local/bin,
-you can call s3 (almost) as if it was a local system. And do stuff like this:
+# S3 Bash
 
-s3bsh ls | grep some-test | s3bsh rmb
+As an experiment, I wrote a python script that presents S3 as if it was part of the local file system,
+where you can use stuff like `cd` or `ls` to query the data. 
 
-Which will remove any buckets that contains 'some-test'. Which is pretty cool.
+This example will get all buckets, search for one whose name contains "some-test" and remove it
+
+`s3bsh ls | grep some-test | s3bsh rmb`
+
+Or you can step into the bucket
+
+`s3bsh cd some-example-bucket`
+
+And query the files with `ls`, or read one with `less` or `cat` 
+
+To install, just run `./setup.sh`. Should work for Linux, might work for Mac. Won't work for windows.

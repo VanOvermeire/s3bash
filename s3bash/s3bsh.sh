@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-# TODO location is specific to my laptop...
-python ~/Documents/s3bash/s3bash/s3bash.py "$@"
+
+# invoke our python script
+python ~/.s3bsh/s3bash.py "$@"
