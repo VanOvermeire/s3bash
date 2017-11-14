@@ -1,5 +1,7 @@
 # S3 Bash
 
+### Overview
+
 As an experiment, I wrote a python script that presents S3 as if it was part of the local file system,
 where you can use stuff like `cd` or `ls` to query the data. 
 
@@ -11,6 +13,22 @@ Or you can step into the bucket
 
 `s3bsh cd some-example-bucket`
 
-And query the files with `ls`, or read one with `less` or `cat` 
+### Commands:
 
-To install, just run `./setup.sh`. Should work for Linux, might work for Mac. Won't work for windows.
+Note that you can't add flags (e.g. `rm -rf`) and implementation of the more complex
+commands is basic:
+  
+`ls`,  
+`pwd`,  
+`touch`,   
+`mkdir` (makes buckets),  
+`rm`,  
+`cd`,  
+`cat`,  
+`less`,  
+`cp`
+
+### Install
+
+*On Linux or Mac*: run `./setup.sh`  
+*Requirement*: boto3 needs to be installed on your pc.
