@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 echo "Creating .s3bsh directory and subdirectory"
-cd ~
+cd ~ &> /dev/null
 mkdir -p .s3bsh/s3bash
 
 echo "Adding our python scripts to that dir"
-cd -
+cd - &> /dev/null
 cp s3bash.py ~/.s3bsh/
 cp -r s3bash/*.py ~/.s3bsh/s3bash/
 

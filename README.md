@@ -20,15 +20,15 @@ And then see all the objects with `ls`
 Note that you can't add flags (e.g. `rm -rf`) and implementation of the more complex
 commands is basic:
   
-`cd`,  
-`ls`,  
-`pwd`,  
-`touch`,   
-`mkdir` (makes buckets),  
-`rm`,   
-`cat`,  
-`less`,  
-`cp`,  
+`cd`  
+`ls`  
+`pwd`  
+`touch`   
+`mkdir` (makes buckets)  
+`rm`   
+`cat`  
+`less`  
+`cp`  
 `mv`
 
 ### Install
@@ -38,8 +38,8 @@ See requirements.txt for pip requirements
 
 ### To Do
 
-commands: '>'?  
-use token to get all objects in bucket (instead of first x)  
-more checks
-add setup.py etc. (the way it is supposed to be)  
-more tests
+- commands: '>'?  
+- use token to get all objects in bucket (instead of first x)  
+- more checks
+- add setup.py etc. (the way it is supposed to be)  
+- more tests
