@@ -67,7 +67,8 @@ def download_s3_file(bucket, key, location):
 
 
 def create_bucket(client, name):
-    response = client.create_bucket(name)
+    print('got ' + name)
+    response = client.create_bucket(Bucket=name)
     if response['ResponseMetadata']['HTTPStatusCode'] != 200:
         print('Could not create bucket')
         exit(1)

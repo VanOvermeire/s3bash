@@ -65,34 +65,30 @@ def handle_copy(names):
         print('not enough arguments')
         exit(1)
 
-    from_location_elements = helpers.get_without_leading_forward_slash(str.split(names[0], '/'))
-    to_location_elements = helpers.get_without_leading_forward_slash(str.split(names[1], '/'))
-
-    is_from_bucket = s3_helper.is_bucket_name(from_location_elements[0])
-    is_to_bucket = s3_helper.is_bucket_name(to_location_elements[0])
+    from_bucket, from_key = helpers.retrieve_bucket_and_key(names[0])
+    to_bucket, to_key = helpers.retrieve_bucket_and_key(names[1])
+    is_from_bucket = s3_helper.is_bucket_name(client, from_bucket)
+    is_to_bucket = s3_helper.is_bucket_name(client, to_bucket)
 
     # TODO if TO is only a bucket, take the name of the file?
 
     if is_from_bucket and is_to_bucket:
-        s3_helper.copy_object_between_buckets(client, '/'.join(from_location_elements), to_location_elements[0],
-                                              '/'.join(to_location_elements[1:]))
+        s3_helper.copy_object_between_buckets(client, from_bucket + '/' + from_key, to_bucket, to_key)
         return True
     elif is_from_bucket:
-        s3_helper.download_s3_file(from_location_elements[0], '/'.join(from_location_elements[1:]), names[1])
+        s3_helper.download_s3_file(from_bucket, from_key, names[1])
         return True
     elif is_to_bucket:
-        s3_helper.put_local_to_s3(client, names[0], to_location_elements[0], '/'.join(to_location_elements[1:]))
+        s3_helper.put_local_to_s3(client, names[0], to_bucket, to_key)
         return False
     else:
-        # or give to normal bash command
-        exit(1)
+        exit(1)  # or give to normal bash command
 
 
 def handle_move(names):
     is_bucket = handle_copy(names)
 
     if is_bucket:
-        print('removing from bucket') # temp
         bucket, key = helpers.retrieve_bucket_and_key(names[0])
         s3_helper.delete_s3_object(client, bucket, key)
     else:

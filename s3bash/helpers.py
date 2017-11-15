@@ -34,10 +34,10 @@ def get_list_without_emtpy_elements(names):
     return new_names
 
 
-# supposes a split on '/'...
 def get_without_leading_forward_slash(list_of_elements):
     if len(list_of_elements[0]) == 0:
         return list_of_elements[1:]
+    return list_of_elements
 
 
 def set_current_s3_directory(name):
