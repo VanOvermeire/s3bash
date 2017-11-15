@@ -2,33 +2,44 @@
 
 ### Overview
 
-As an experiment, I wrote a python script that presents S3 as if it was part of the local file system,
-where you can use stuff like `cd` or `ls` to query the data. 
+As an experiment, I wrote a python script that presents S3 as if it was part of the local file system.  
+So you can just use stuff like `cd` or `ls`. 
 
-This example will get all buckets, search for one whose name contains "some-test" and remove it
+This example will get all buckets, search for one whose name contains 'some-test' and remove it
 
 `s3bsh ls | grep some-test | s3bsh rmb`
 
-Or you can step into the bucket
+Or you can step into the bucket like this:
 
 `s3bsh cd some-example-bucket`
+
+And then see all the objects with `ls`
 
 ### Commands:
 
 Note that you can't add flags (e.g. `rm -rf`) and implementation of the more complex
 commands is basic:
   
+`cd`,  
 `ls`,  
 `pwd`,  
 `touch`,   
 `mkdir` (makes buckets),  
-`rm`,  
-`cd`,  
+`rm`,   
 `cat`,  
 `less`,  
-`cp`
+`cp`,  
+`mv`
 
 ### Install
 
-*On Linux or Mac*: run `./setup.sh`  
-*Requirement*: boto3 needs to be installed on your pc.
+*On Linux or Mac*: run `./setup.sh`.   
+See requirements.txt for pip requirements
+
+### To Do
+
+commands: '>'?  
+use token to get all objects in bucket (instead of first x)  
+more checks
+add setup.py etc. (the way it is supposed to be)  
+more tests

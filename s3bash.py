@@ -1,12 +1,7 @@
 import sys
 import os
-import boto3
 from s3bash import s3_helper, helpers
 
-# TODO commands: '>' (f), mv (f)
-# TODO split up file (s3, handlers, checks and this)
-# TODO use token to get all objects in bucket (instead of first x); more checks
-# TODO add setup.py etc. (the way it is supposed to be)
 
 NO_BUCKET = 's3'
 
@@ -15,14 +10,12 @@ def handle_list():
     bucket = helpers.get_current_s3_directory()
 
     if bucket == NO_BUCKET:
-        response = client.list_buckets()['Buckets']
-        for r in response:
-            print(r['Name'])
+        names = s3_helper.get_list_of_bucket_names(client)
     else:
-        response = client.list_objects_v2(Bucket=bucket)
+        names = s3_helper.get_list_of_objects(client, bucket)
 
-        for r in response['Contents']:
-            print(r['Key'])
+    for name in names:
+        print(name)
 
 
 def handle_change_directory(names):
@@ -31,6 +24,7 @@ def handle_change_directory(names):
     if name == '..':
         helpers.set_current_s3_directory(NO_BUCKET)
     else:
+        # TODO this could be better, separate method
         if '/' in name:
             name = str.split(name, '/')[1]
 
@@ -46,9 +40,8 @@ def handle_read_file(names):
     bucket = helpers.get_current_s3_directory()
     name = names[0]
 
-    if not bucket == NO_BUCKET: # TODO move to s3
-        s3_object = client.get_object(Bucket=bucket, Key=name)
-        object_as_string = s3_object['Body'].read()
+    if not bucket == NO_BUCKET:
+        object_as_string = s3_helper.get_s3_object_as_string(client, bucket, name)
         print(object_as_string)
 
 
@@ -61,7 +54,7 @@ def handle_touch_file(names):
     bucket = helpers.get_current_s3_directory()
 
     if not bucket == NO_BUCKET and not s3_helper.is_object_name(client, bucket, name):
-        client.put_object(Body=b'', Bucket=bucket, Key=name) # TODO move to s3
+        s3_helper.put_empty_s3_object(client, bucket, name)
     else:
         exit(1)
 
@@ -81,8 +74,8 @@ def handle_copy(names):
     # TODO if TO is only a bucket, take the name of the file?
 
     if is_from_bucket and is_to_bucket:
-        client.copy_object(Bucket=to_location_elements[0], Key='/'.join(to_location_elements[1:]),
-                           CopySource='/'.join(from_location_elements))
+        s3_helper.copy_object_between_buckets(client, '/'.join(from_location_elements), to_location_elements[0],
+                                              '/'.join(to_location_elements[1:]))
         return True
     elif is_from_bucket:
         s3_helper.download_s3_file(from_location_elements[0], '/'.join(from_location_elements[1:]), names[1])
@@ -97,24 +90,23 @@ def handle_copy(names):
 
 def handle_move(names):
     is_bucket = handle_copy(names)
-    helpers.get_without_leading_forward_slash(str.split(names[0], '/'))
 
     if is_bucket:
-        print('removing from bucket')
-        # TODO client.delete_object(Bucket=bucket, Key=name)
+        print('removing from bucket') # temp
+        bucket, key = helpers.retrieve_bucket_and_key(names[0])
+        s3_helper.delete_s3_object(client, bucket, key)
     else:
         os.remove(names[0])
 
 
 def handle_create_buckets(names):
     for name in names:
-        s3_helper.handle_create_bucket(client, name)
+        s3_helper.create_bucket(client, name)
 
 
 def handle_deletes(names):
     for name in names:
-
-        s3_helper.handle_delete(client, helpers.get_current_s3_directory(), name)
+        s3_helper.delete_bucket_or_object(client, helpers.get_current_s3_directory(), name)
 
 
 def handle(our_command, our_arguments):
@@ -147,7 +139,7 @@ command = sys.argv[1]
 
 arguments = helpers.get_standard_input_as_list()
 arguments.extend(helpers.get_additional_arguments_as_list())
-arguments = helpers.list_without_emtpy_elements(arguments)
+arguments = helpers.get_list_without_emtpy_elements(arguments)
 
 client = s3_helper.get_s3_client()
 

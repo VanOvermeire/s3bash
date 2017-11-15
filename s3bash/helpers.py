@@ -5,29 +5,17 @@ S3_DIRECTORY_NAME= 'S3_DIRECTORY'
 NO_BUCKET = 's3'
 
 
-def list_without_emtpy_elements(names):
-    new_names = []
-    for name in names:
-        if len(name) > 0:
-            new_names.append(name)
-    return new_names
-
-
 def check_number_of_args(number):
     if len(sys.argv) < number:
         exit(1)
 
 
+def get_additional_arguments_as_list():
+    return sys.argv[2:]
+
+
 def has_at_least_one_argument(args):
     return len(list(args)) > 0
-
-
-def set_current_s3_directory(name):
-    # dir and file were created by setup
-    my_file = os.path.expanduser('~/.s3bsh/s3data')
-    # just overwrite all contents for now
-    with open(my_file, 'w') as s3data:
-        s3data.write('DIRECTORY=' + name)
 
 
 def get_standard_input_as_list():
@@ -38,8 +26,26 @@ def get_standard_input_as_list():
     return our_stdin_list
 
 
-def get_additional_arguments_as_list():
-    return sys.argv[2:]
+def get_list_without_emtpy_elements(names):
+    new_names = []
+    for name in names:
+        if len(name) > 0:
+            new_names.append(name)
+    return new_names
+
+
+# supposes a split on '/'...
+def get_without_leading_forward_slash(list_of_elements):
+    if len(list_of_elements[0]) == 0:
+        return list_of_elements[1:]
+
+
+def set_current_s3_directory(name):
+    # dir and file were created by setup
+    my_file = os.path.expanduser('~/.s3bsh/s3data')
+    # just overwrite all contents for now
+    with open(my_file, 'w') as s3data:
+        s3data.write('DIRECTORY=' + name)
 
 
 def get_current_s3_directory():
@@ -52,13 +58,7 @@ def get_current_s3_directory():
     return NO_BUCKET
 
 
-def get_without_leading_forward_slash(list_of_elements):
-    if len(list_of_elements[0]) == 0:
-        return list_of_elements[1:]
-
-
 # TODO start using this for cp
-# tuple result (bucket, key)
 def retrieve_bucket_and_key(path):
     elements = get_without_leading_forward_slash(str.split(path, '/'))
     bucket = elements[0]

@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-echo "Creating .s3bsh directory"
+echo "Creating .s3bsh directory and subdirectory"
 cd ~
-mkdir .s3bsh
-echo "Adding our python script to that dir"
+mkdir -p .s3bsh/s3bash
+
+echo "Adding our python scripts to that dir"
 cd -
-cd s3bash
 cp s3bash.py ~/.s3bsh/
+cp -r s3bash/*.py ~/.s3bsh/s3bash/
+
 echo "Adding empty s3data file"
-touch s3data
+touch ~/.s3bsh/s3data
 echo "Adding bash script to /usr/local/bin"
 sudo cp s3bsh.sh /usr/local/bin/s3bsh
