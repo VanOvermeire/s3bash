@@ -58,7 +58,6 @@ def get_current_s3_directory():
     return NO_BUCKET
 
 
-# TODO start using this for cp
 def retrieve_bucket_and_key(path):
     elements = get_without_leading_forward_slash(str.split(path, '/'))
     bucket = elements[0]

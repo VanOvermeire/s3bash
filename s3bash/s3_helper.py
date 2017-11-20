@@ -84,8 +84,8 @@ def delete_bucket_or_object(client, current_location, name):
         exit(1)
 
 
-def delete_s3_bucket(client, bucket):
-    response = client.delete_bucket(bucket)
+def delete_s3_bucket(client, name):
+    response = client.delete_bucket(Bucket=name)
     if response['ResponseMetadata']['HTTPStatusCode'] != 204:
         print('Could not delete bucket')
         exit(1)

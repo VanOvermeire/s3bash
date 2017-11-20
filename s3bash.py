@@ -70,7 +70,7 @@ def handle_copy(names):
     is_from_bucket = s3_helper.is_bucket_name(client, from_bucket)
     is_to_bucket = s3_helper.is_bucket_name(client, to_bucket)
 
-    # TODO if TO is only a bucket, take the name of the file?
+    # TODO if TO is only a bucket, take the name of the from file?
 
     if is_from_bucket and is_to_bucket:
         s3_helper.copy_object_between_buckets(client, from_bucket + '/' + from_key, to_bucket, to_key)

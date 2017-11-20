@@ -38,8 +38,6 @@ See requirements.txt for pip requirements
 
 ### To Do
 
-- commands: '>'?  
+- commands?
 - use token to get all objects in bucket (instead of first x)  
 - more checks
-- add setup.py etc. (the way it is supposed to be)  
-- more tests

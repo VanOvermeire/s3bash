@@ -20,8 +20,14 @@ class TestHelpers(unittest.TestCase):
 
         self.assertFalse(result)
 
-    def test_retrieve_bucket_and_key(self):
+    def test_retrieve_bucket_and_key_forward_slash(self):
         bucket, key = helpers.retrieve_bucket_and_key('/some-bucket/somefilename')
+
+        self.assertEqual(bucket, 'some-bucket')
+        self.assertEqual(key, 'somefilename')
+
+    def test_retrieve_bucket_and_key_no_forward_slash(self):
+        bucket, key = helpers.retrieve_bucket_and_key('some-bucket/somefilename')
 
         self.assertEqual(bucket, 'some-bucket')
         self.assertEqual(key, 'somefilename')
