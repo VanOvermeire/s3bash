@@ -36,8 +36,5 @@ commands is basic:
 *On Linux or Mac*: run `./setup.sh`.   
 See requirements.txt for pip requirements
 
-### To Do
-
-- commands?
-- use token to get all objects in bucket (instead of first x)  
-- more checks
+### Suggestions
+Suggestions are always welcome

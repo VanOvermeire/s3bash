@@ -32,6 +32,12 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(bucket, 'some-bucket')
         self.assertEqual(key, 'somefilename')
 
+    def test_retrieve_bucket_and_key_no_key(self):
+        bucket, key = helpers.retrieve_bucket_and_key('some-bucket')
+
+        self.assertEqual(bucket, 'some-bucket')
+        self.assertTrue(len(key) == 0)
+
     def test_get_without_forward_slash_one_element(self):
         result = helpers.get_without_leading_forward_slash(['somefile'])
 
@@ -44,6 +50,16 @@ class TestHelpers(unittest.TestCase):
         self.assertTrue(len(result) == 2)
         self.assertEqual(result[0], 'somedir')
         self.assertEqual(result[1], 'somefile')
+
+    def test_get_last_part_if_forward_slash(self):
+        result = helpers.get_last_part_if_forward_slash('../someotherbucket')
+
+        self.assertEqual(result, 'someotherbucket')
+
+    def test_get_last_part_if_forward_slash_no_slash(self):
+        result = helpers.get_last_part_if_forward_slash('someotherbucket')
+
+        self.assertEqual(result, 'someotherbucket')
 
 
 if __name__ == '__main__':

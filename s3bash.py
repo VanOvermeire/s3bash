@@ -2,7 +2,6 @@ import sys
 import os
 from s3bash import s3_helper, helpers
 
-
 NO_BUCKET = 's3'
 
 
@@ -24,9 +23,7 @@ def handle_change_directory(names):
     if name == '..':
         helpers.set_current_s3_directory(NO_BUCKET)
     else:
-        # TODO this could be better, separate method
-        if '/' in name:
-            name = str.split(name, '/')[1]
+        name = helpers.get_last_part_if_forward_slash(name)
 
         if s3_helper.is_bucket_name(client, name):
             helpers.set_current_s3_directory(name)
@@ -59,7 +56,6 @@ def handle_touch_file(names):
         exit(1)
 
 
-# will return whether the FROM is a bucket
 def handle_copy(names):
     if len(names) < 2:
         print('not enough arguments')
@@ -70,7 +66,8 @@ def handle_copy(names):
     is_from_bucket = s3_helper.is_bucket_name(client, from_bucket)
     is_to_bucket = s3_helper.is_bucket_name(client, to_bucket)
 
-    # TODO if TO is only a bucket, take the name of the from file?
+    if len(to_key) == 0:
+        to_key = from_key  # if there is no to, key is the same as original
 
     if is_from_bucket and is_to_bucket:
         s3_helper.copy_object_between_buckets(client, from_bucket + '/' + from_key, to_bucket, to_key)
@@ -102,7 +99,16 @@ def handle_create_buckets(names):
 
 def handle_deletes(names):
     for name in names:
-        s3_helper.delete_bucket_or_object(client, helpers.get_current_s3_directory(), name)
+        delete_bucket_or_object(helpers.get_current_s3_directory(), name)
+
+
+def delete_bucket_or_object(current_location, name):
+    if current_location == NO_BUCKET and s3_helper.is_bucket_name(client, name):
+        s3_helper.delete_s3_bucket(client, name)
+    elif s3_helper.is_object_name(client, current_location, name):
+        s3_helper.delete_s3_object(client, current_location, name)
+    else:
+        exit(1)
 
 
 def handle(our_command, our_arguments):

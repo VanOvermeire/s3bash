@@ -40,6 +40,13 @@ def get_without_leading_forward_slash(list_of_elements):
     return list_of_elements
 
 
+def get_last_part_if_forward_slash(name):
+    if '/' in name:
+        result = str.split(name, '/')
+        name = result[len(result) - 1]
+    return name
+
+
 def set_current_s3_directory(name):
     # dir and file were created by setup
     my_file = os.path.expanduser('~/.s3bsh/s3data')

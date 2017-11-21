@@ -1,7 +1,7 @@
 import boto3
 
 
-NO_BUCKET = 's3'
+MAX_OBJECT_LIMIT = 1000
 
 
 def get_s3_client():
@@ -31,8 +31,31 @@ def get_list_of_bucket_names(client):
 
 
 def get_list_of_objects(client, bucket):
-    response = client.list_objects_v2(Bucket=bucket)['Contents']
-    return map(lambda x: x['Key'], response)
+    list_of_objects = []
+    response = client.list_objects_v2(Bucket=bucket, MaxKeys=MAX_OBJECT_LIMIT)
+    list_of_objects.extend(get_keys_from_response(response))
+    token = get_token_from_response(response)
+
+    while len(token) > 0:
+        response = client.list_objects_v2(Bucket=bucket, MaxKeys=MAX_OBJECT_LIMIT, ContinuationToken=token)
+        list_of_objects.extend(get_keys_from_response(response))
+        token = get_token_from_response(response)
+
+    return list_of_objects
+
+
+def get_token_from_response(response):
+    try:
+        return response['NextContinuationToken']
+    except KeyError:
+        return ''
+
+
+def get_keys_from_response(response):
+    try:
+        return map(lambda x: x['Key'], response['Contents'])
+    except KeyError:
+        return []
 
 
 def get_s3_object_as_string(client, bucket, key):
@@ -71,16 +94,6 @@ def create_bucket(client, name):
     response = client.create_bucket(Bucket=name)
     if response['ResponseMetadata']['HTTPStatusCode'] != 200:
         print('Could not create bucket')
-        exit(1)
-
-
-# TODO maybe could be move to main?
-def delete_bucket_or_object(client, current_location, name):
-    if current_location == NO_BUCKET and is_bucket_name(client, name):
-        delete_s3_bucket(client, name)
-    elif is_object_name(client, current_location, name):
-        delete_s3_object(client, current_location, name)
-    else:
         exit(1)
 
 
