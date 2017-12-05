@@ -33,8 +33,7 @@ commands is basic:
 
 ### Install
 
-*On Linux or Mac*: run `./setup.sh`.   
-See requirements.txt for pip requirements
+*On Linux or Mac*: run `./setup.sh`. This will also install the boto3 module.
 
 ### Suggestions
 Suggestions are always welcome

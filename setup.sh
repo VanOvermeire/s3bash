@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo "Installing requirements"
+pip3 install -r requirements.txt
+
 echo "Creating .s3bsh directory and subdirectory"
 cd ~ &> /dev/null
 mkdir -p .s3bsh/s3bash
